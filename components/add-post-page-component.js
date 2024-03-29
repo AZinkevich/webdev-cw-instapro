@@ -3,6 +3,8 @@ import { renderHeaderComponent } from "./header-component.js";
 import { renderUploadImageComponent } from "./upload-image-component.js";
 
 export function renderAddPostPageComponent({ appEl, onAddPostClick }) {
+  let imageUrl = "";
+
   const render = () => {
     // TODO: Реализовать страницу добавления поста
 
@@ -32,13 +34,20 @@ export function renderAddPostPageComponent({ appEl, onAddPostClick }) {
         </div>
         </div>
   `;
-
+  
     appEl.innerHTML = appHtml;
+
+    renderUploadImageComponent({
+      element: document.querySelector(".upload-image-container"),
+      onImageUrlChange(newImageUrl) {
+        imageUrl = newImageUrl;
+      },
+    });
 
     document.getElementById("add-button").addEventListener("click", () => {
       onAddPostClick({
         description: document.getElementById("img-descr").value,
-        imageUrl: "https://storage.yandexcloud.net/skypro-webdev-homework-bucket/1711686540791-1711547873392-20141231_222054.jpg",
+        imageUrl: imageUrl,
       });
     });
 
