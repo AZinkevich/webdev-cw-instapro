@@ -1,4 +1,4 @@
-import { getPosts } from "./api.js";
+import { getPosts, postsHost } from "./api.js";
 import { renderAddPostPageComponent } from "./components/add-post-page-component.js";
 import { renderAuthPageComponent } from "./components/auth-page-component.js";
 import {
@@ -111,11 +111,26 @@ const renderApp = () => {
       appEl,
       onAddPostClick({ description, imageUrl }) {
         // TODO: реализовать добавление поста в API
+        fetch(postsHost,  {
+          method: "POST",
+          headers: { Authorization: getToken() },
+          body: JSON.stringify({
+            description,
+            imageUrl,
+          }),
+        }).then((response) => {
+          if (response.status === 400) {
+            throw new Error("ошибка 400");
+          }
+          goToPage(POSTS_PAGE);
+          return response.json();
+        });
+      }
         
-        console.log("Добавляю пост...", { description, imageUrl });
-        goToPage(POSTS_PAGE);
+       // console.log("Добавляю пост...", { description, imageUrl });
+       
       },
-    });
+    );
   }
 
   if (page === POSTS_PAGE) {
