@@ -102,7 +102,7 @@ const renderApp = () => {
         goToPage(POSTS_PAGE);
       },
       user,
-      goToPage,
+      goToPage
     });
   }
 
@@ -111,6 +111,7 @@ const renderApp = () => {
       appEl,
       onAddPostClick({ description, imageUrl }) {
         // TODO: реализовать добавление поста в API
+        
         console.log("Добавляю пост...", { description, imageUrl });
         goToPage(POSTS_PAGE);
       },

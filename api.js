@@ -69,3 +69,5 @@ export function uploadImage({ file }) {
     return response.json();
   });
 }
+
+
