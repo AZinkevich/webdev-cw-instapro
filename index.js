@@ -69,7 +69,6 @@ export const goToPage = (newPage, data) => {
     }
 
     if (newPage === USER_POSTS_PAGE) {
-      // TODO: реализовать получение постов юзера из API
       console.log("Открываю страницу пользователя: ", data.userId);
       page = LOADING_PAGE;
       renderApp();
@@ -78,7 +77,7 @@ export const goToPage = (newPage, data) => {
         .then((newPosts) => {
           page = USER_POSTS_PAGE;
           posts = newPosts;
-          selectUser = data.userId
+          selectUser = data.userId;
           renderApp();
         })
         .catch((error) => {
@@ -115,7 +114,7 @@ const renderApp = () => {
         goToPage(POSTS_PAGE);
       },
       user,
-      goToPage
+      goToPage,
     });
   }
 
@@ -123,8 +122,7 @@ const renderApp = () => {
     return renderAddPostPageComponent({
       appEl,
       onAddPostClick({ description, imageUrl }) {
-        // TODO: реализовать добавление поста в API
-        fetch(postsHost,  {
+        fetch(postsHost, {
           method: "POST",
           headers: { Authorization: getToken() },
           body: JSON.stringify({
@@ -138,12 +136,8 @@ const renderApp = () => {
           goToPage(POSTS_PAGE);
           return response.json();
         });
-      }
-        
-       // console.log("Добавляю пост...", { description, imageUrl });
-       
       },
-    );
+    });
   }
 
   if (page === POSTS_PAGE) {
@@ -154,8 +148,6 @@ const renderApp = () => {
 
   if (page === USER_POSTS_PAGE) {
     console.log("Открываю страницу пользователя: ", selectUser);
-    // TODO: реализовать страницу фотографию пользвателя
-    //appEl.innerHTML = "Здесь будет страница фотографий пользователя";
     return renderUserPostsPageComponent({
       appEl,
       selectUser,

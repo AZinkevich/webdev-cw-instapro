@@ -30,7 +30,7 @@ export function renderPostsPageComponent({ appEl }) {
       <button data-post-id="${post.id}" class="like-button">
         <img src="./assets/images/like-active.svg" />
       </button>
-      <p class="post-likes-text">Нравится: <strong>2</strong></p>
+      <p class="post-likes-text">Нравится: <strong>${post.likes.length === 0 ? '0' : `${post.likes[0].name} ${post.likes.length === 1 ? '' : `и еще ${post.likes.length - 1}`}`} </strong></p>
     </div>
     <p class="post-text">
       <span class="user-name">${post.user.name}</span>
