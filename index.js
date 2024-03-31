@@ -15,10 +15,12 @@ import {
   removeUserFromLocalStorage,
   saveUserToLocalStorage,
 } from "./helpers.js";
+import { renderUserPostsPageComponent } from "./components/user-posts-page-component.js";
 
 export let user = getUserFromLocalStorage();
 export let page = null;
 export let posts = [];
+let selectUser;
 
 const getToken = () => {
   const token = user ? `Bearer ${user.token}` : undefined;
@@ -69,9 +71,20 @@ export const goToPage = (newPage, data) => {
     if (newPage === USER_POSTS_PAGE) {
       // TODO: реализовать получение постов юзера из API
       console.log("Открываю страницу пользователя: ", data.userId);
-      page = USER_POSTS_PAGE;
-      posts = [];
-      return renderApp();
+      page = LOADING_PAGE;
+      renderApp();
+
+      return getPosts({ token: getToken() })
+        .then((newPosts) => {
+          page = USER_POSTS_PAGE;
+          posts = newPosts;
+          selectUser = data.userId
+          renderApp();
+        })
+        .catch((error) => {
+          console.error(error);
+          goToPage(USER_POSTS_PAGE);
+        });
     }
 
     page = newPage;
@@ -140,9 +153,13 @@ const renderApp = () => {
   }
 
   if (page === USER_POSTS_PAGE) {
+    console.log("Открываю страницу пользователя: ", selectUser);
     // TODO: реализовать страницу фотографию пользвателя
-    appEl.innerHTML = "Здесь будет страница фотографий пользователя";
-    return;
+    //appEl.innerHTML = "Здесь будет страница фотографий пользователя";
+    return renderUserPostsPageComponent({
+      appEl,
+      selectUser,
+    });
   }
 };
 
