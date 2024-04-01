@@ -1,8 +1,8 @@
 import { USER_POSTS_PAGE } from "../routes.js";
 import { renderHeaderComponent } from "./header-component.js";
-import { posts, goToPage } from "../index.js";
+import { posts, goToPage, getToken } from "../index.js";
 
-export function renderPostsPageComponent({ appEl }) {
+export function renderPostsPageComponent({ appEl, token }) {
   // TODO: реализовать рендер постов из api
   console.log("Актуальный список постов:", posts);
   /**
@@ -27,10 +27,20 @@ export function renderPostsPageComponent({ appEl }) {
       />
     </div>
     <div class="post-likes">
-      <button data-post-id="${post.id}" class="like-button">
-        ${post.isLiked ? '<img src="./assets/images/like-active.svg" />' : '<img src="./assets/images/like-not-active.svg" />'}
+      <button data-post-id="${post.id}" class="like-button" data-index="${index}" data-is-liked="${post.isLiked}">
+        ${
+          post.isLiked
+            ? '<img src="./assets/images/like-active.svg">'
+            : '<img src="./assets/images/like-not-active.svg">'
+        }
       </button>
-      <p class="post-likes-text">Нравится: <strong>${post.likes.length === 0 ? '0' : `${post.likes[0].name} ${post.likes.length === 1 ? '' : `и еще ${post.likes.length - 1}`}`} </strong></p>
+      <p class="post-likes-text">Нравится: <strong>${
+        post.likes.length === 0
+          ? "0"
+          : `${post.likes[0].name} ${
+              post.likes.length === 1 ? "" : `и еще ${post.likes.length - 1}`
+            }`
+      } </strong></p>
     </div>
     <p class="post-text">
       <span class="user-name">${post.user.name}</span>
@@ -49,6 +59,32 @@ export function renderPostsPageComponent({ appEl }) {
   renderHeaderComponent({
     element: document.querySelector(".header-container"),
   });
+
+  for (let likeEl of document.querySelectorAll(".like-button")) {
+    likeEl.addEventListener("click", () => {
+      const index = likeEl.dataset.index;
+      console.log(likeEl.dataset.postId, getToken(), likeEl.dataset.index, posts[index].isLiked);
+      return fetch(
+        "https://wedev-api.sky.pro/api/v1/prod/instapro/" +
+          likeEl.dataset.postId +
+          (posts[index].isLiked ? "/dislike" : "/like"),
+        {
+          method: "POST",
+          headers: {
+            Authorization: getToken(),
+            body: JSON.stringify({
+              id: likeEl.dataset.postId,
+            }),
+          },
+        }
+      ).then((response) => {
+        if (response.status === 401) {
+          throw new Error("Нет авторизации");
+        }
+        return response.json();
+      });
+    });
+  }
 
   for (let userEl of document.querySelectorAll(".post-header")) {
     userEl.addEventListener("click", () => {
