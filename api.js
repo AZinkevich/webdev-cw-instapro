@@ -28,7 +28,7 @@ export function getPosts({ token }) {
     });
 }
 
-export function getUserPosts({ token, currentUser }) {
+export function getUserPosts({ token }) {
   return fetch(userPostHost + currentUser, {
     method: "GET",
     headers: {
