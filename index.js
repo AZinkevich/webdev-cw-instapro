@@ -20,7 +20,7 @@ import { renderUserPostsPageComponent } from "./components/user-posts-page-compo
 export let user = getUserFromLocalStorage();
 export let page = null;
 export let posts = [];
-let selectUser;
+let currentUser;
 
 export const getToken = () => {
   const token = user ? `Bearer ${user.token}` : undefined;
@@ -32,6 +32,10 @@ export const logout = () => {
   removeUserFromLocalStorage();
   goToPage(POSTS_PAGE);
 };
+
+export function setPosts(newPosts) {
+  posts = newPosts;
+}
 
 /**
  * Включает страницу приложения
@@ -77,7 +81,7 @@ export const goToPage = (newPage, data) => {
         .then((newPosts) => {
           page = USER_POSTS_PAGE;
           posts = newPosts;
-          selectUser = data.userId;
+          currentUser = data.userId;
           renderApp();
         })
         .catch((error) => {
@@ -95,7 +99,7 @@ export const goToPage = (newPage, data) => {
   throw new Error("страницы не существует");
 };
 
-const renderApp = () => {
+export const renderApp = () => {
   const appEl = document.getElementById("app");
   if (page === LOADING_PAGE) {
     return renderLoadingPageComponent({
@@ -147,10 +151,10 @@ const renderApp = () => {
   }
 
   if (page === USER_POSTS_PAGE) {
-    console.log("Открываю страницу пользователя: ", selectUser);
+    console.log("Открываю страницу пользователя: ", currentUser);
     return renderUserPostsPageComponent({
       appEl,
-      selectUser,
+      currentUser,
     });
   }
 };

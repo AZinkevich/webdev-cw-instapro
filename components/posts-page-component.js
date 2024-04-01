@@ -1,6 +1,7 @@
 import { USER_POSTS_PAGE } from "../routes.js";
 import { renderHeaderComponent } from "./header-component.js";
-import { posts, goToPage, getToken } from "../index.js";
+import { posts, goToPage, getToken, setPosts, renderApp } from "../index.js";
+import {getPosts} from "../api.js"
 
 export function renderPostsPageComponent({ appEl, token }) {
   // TODO: реализовать рендер постов из api
@@ -27,7 +28,11 @@ export function renderPostsPageComponent({ appEl, token }) {
       />
     </div>
     <div class="post-likes">
-      <button data-post-id="${post.id}" class="like-button" data-index="${index}" data-is-liked="${post.isLiked}">
+      <button data-post-id="${
+        post.id
+      }" class="like-button" data-index="${index}" data-is-liked="${
+        post.isLiked
+      }">
         ${
           post.isLiked
             ? '<img src="./assets/images/like-active.svg">'
@@ -37,7 +42,7 @@ export function renderPostsPageComponent({ appEl, token }) {
       <p class="post-likes-text">Нравится: <strong>${
         post.likes.length === 0
           ? "0"
-          : `${post.likes[0].name} ${
+          : `${post.likes[post.likes.length - 1].name} ${
               post.likes.length === 1 ? "" : `и еще ${post.likes.length - 1}`
             }`
       } </strong></p>
@@ -63,7 +68,12 @@ export function renderPostsPageComponent({ appEl, token }) {
   for (let likeEl of document.querySelectorAll(".like-button")) {
     likeEl.addEventListener("click", () => {
       const index = likeEl.dataset.index;
-      console.log(likeEl.dataset.postId, getToken(), likeEl.dataset.index, posts[index].isLiked);
+      console.log(
+        likeEl.dataset.postId,
+        getToken(),
+        likeEl.dataset.index,
+        posts[index].isLiked
+      );
       return fetch(
         "https://wedev-api.sky.pro/api/v1/prod/instapro/" +
           likeEl.dataset.postId +
@@ -77,12 +87,27 @@ export function renderPostsPageComponent({ appEl, token }) {
             }),
           },
         }
-      ).then((response) => {
-        if (response.status === 401) {
-          throw new Error("Нет авторизации");
-        }
-        return response.json();
-      });
+      )
+        .then((response) => {
+          if (response.status === 401) {
+            alert("Чтобы поставить лайк, авторизуйтесь");
+            throw new Error("Нет авторизации");
+          }
+          return response.json();
+        })
+        .then(() => {
+          getPosts({ token: getToken() }).then((res) => {
+            setPosts(res);
+            renderApp();
+          });
+        })
+        .catch((error) => {
+          if (error.message === "Нет авторизации") {
+            console.warn(error);
+            return;
+          }
+          return;
+        });
     });
   }
 

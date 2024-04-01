@@ -2,16 +2,16 @@ import { USER_POSTS_PAGE } from "../routes.js";
 import { renderHeaderComponent } from "./header-component.js";
 import { posts, goToPage } from "../index.js";
 
-export function renderUserPostsPageComponent({ appEl, selectUser }) {
+export function renderUserPostsPageComponent({ appEl, currentUser }) {
   // TODO: реализовать рендер постов из api
-  console.log("Список постов юзера:", selectUser);
+  console.log("Список постов юзера:", currentUser);
   /**
    * TODO: чтобы отформатировать дату создания поста в виде "19 минут назад"
    * можно использовать https://date-fns.org/v2.29.3/docs/formatDistanceToNow
    */
 
   const filteredPosts = posts.filter((post) => {
-    return post.user.id === selectUser;
+    return post.user.id === currentUser;
   });
 
   const appHtml = filteredPosts
@@ -24,10 +24,24 @@ export function renderUserPostsPageComponent({ appEl, selectUser }) {
       />
     </div>
     <div class="post-likes">
-      <button data-post-id="${post.id}" class="like-button">
-        <img src="./assets/images/like-active.svg" />
+      <button data-post-id="${
+        post.id
+      }" class="like-button" data-index="${index}" data-is-liked="${
+        post.isLiked
+      }">
+        ${
+          post.isLiked
+            ? '<img src="./assets/images/like-active.svg">'
+            : '<img src="./assets/images/like-not-active.svg">'
+        }
       </button>
-      <p class="post-likes-text">Нравится: <strong>2</strong></p>
+      <p class="post-likes-text">Нравится: <strong>${
+        post.likes.length === 0
+          ? "0"
+          : `${post.likes[post.likes.length - 1].name} ${
+              post.likes.length === 1 ? "" : `и еще ${post.likes.length - 1}`
+            }`
+      } </strong></p>
     </div>
     <p class="post-text">
       <span class="user-name">${post.user.name}</span>
