@@ -65,6 +65,18 @@ export function renderPostsPageComponent({ appEl, token }) {
     element: document.querySelector(".header-container"),
   });
 
+  for (let userEl of document.querySelectorAll(".post-header")) {
+    userEl.addEventListener("click", () => {
+      goToPage(USER_POSTS_PAGE, {
+        userId: userEl.dataset.userId,
+      });
+    });
+  }
+
+  initLikeButton();
+}
+
+export function initLikeButton () {
   for (let likeEl of document.querySelectorAll(".like-button")) {
     likeEl.addEventListener("click", () => {
       const index = likeEl.dataset.index;
@@ -108,14 +120,6 @@ export function renderPostsPageComponent({ appEl, token }) {
           }
           return;
         });
-    });
-  }
-
-  for (let userEl of document.querySelectorAll(".post-header")) {
-    userEl.addEventListener("click", () => {
-      goToPage(USER_POSTS_PAGE, {
-        userId: userEl.dataset.userId,
-      });
     });
   }
 }

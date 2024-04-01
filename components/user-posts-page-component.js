@@ -1,6 +1,7 @@
 import { USER_POSTS_PAGE } from "../routes.js";
 import { renderHeaderComponent } from "./header-component.js";
 import { posts, goToPage } from "../index.js";
+import { initLikeButton } from "./posts-page-component.js";
 
 export function renderUserPostsPageComponent({ appEl, currentUser }) {
   // TODO: реализовать рендер постов из api
@@ -75,4 +76,5 @@ export function renderUserPostsPageComponent({ appEl, currentUser }) {
       });
     });
   }
+  initLikeButton();
 }
