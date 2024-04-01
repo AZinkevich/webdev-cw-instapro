@@ -1,7 +1,10 @@
 // Замени на свой, чтобы получить независимый от других набор данных.
+
+import { currentUser } from "./index.js";
+
 // "боевая" версия инстапро лежит в ключе prod
 const personalKey = "prod";
-const baseHost = "https://webdev-hw-api.vercel.app";
+const baseHost = "https://wedev-api.sky.pro";
 export const postsHost = `${baseHost}/api/v1/${personalKey}/instapro`;
 
 export function getPosts({ token }) {
@@ -10,6 +13,27 @@ export function getPosts({ token }) {
     headers: {
       Authorization: token,
     },
+  })
+    .then((response) => {
+      if (response.status === 401) {
+        throw new Error("Нет авторизации");
+      }
+
+      return response.json();
+    })
+    .then((data) => {
+      console.log(data.posts);
+      return data.posts;
+    });
+}
+
+export function getUserPosts({ token }) {
+  return fetch("https://wedev-api.sky.pro/api/v1/prod/instapro/user-posts/" + currentUser, {
+    method: "GET",
+    headers: {
+      Authorization: token,
+    },
+    id: currentUser,
   })
     .then((response) => {
       if (response.status === 401) {

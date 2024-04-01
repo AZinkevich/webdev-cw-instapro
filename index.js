@@ -1,4 +1,4 @@
-import { getPosts, postsHost } from "./api.js";
+import { getPosts, getUserPosts, postsHost } from "./api.js";
 import { renderAddPostPageComponent } from "./components/add-post-page-component.js";
 import { renderAuthPageComponent } from "./components/auth-page-component.js";
 import {
@@ -20,7 +20,7 @@ import { renderUserPostsPageComponent } from "./components/user-posts-page-compo
 export let user = getUserFromLocalStorage();
 export let page = null;
 export let posts = [];
-let currentUser;
+export let currentUser;
 
 export const getToken = () => {
   const token = user ? `Bearer ${user.token}` : undefined;
@@ -75,13 +75,13 @@ export const goToPage = (newPage, data) => {
     if (newPage === USER_POSTS_PAGE) {
       console.log("Открываю страницу пользователя: ", data.userId);
       page = LOADING_PAGE;
+      currentUser = data.userId;
       renderApp();
 
-      return getPosts({ token: getToken() })
+      return getUserPosts({ token: getToken(), currentUser })
         .then((newPosts) => {
           page = USER_POSTS_PAGE;
           posts = newPosts;
-          currentUser = data.userId;
           renderApp();
         })
         .catch((error) => {

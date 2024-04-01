@@ -11,11 +11,11 @@ export function renderUserPostsPageComponent({ appEl, currentUser }) {
    * можно использовать https://date-fns.org/v2.29.3/docs/formatDistanceToNow
    */
 
-  const filteredPosts = posts.filter((post) => {
-    return post.user.id === currentUser;
-  });
+  // const filteredPosts = posts.filter((post) => {
+  //post.user.id === currentUser;
+  // });
 
-  const appHtml = filteredPosts
+  const appHtml = posts
     .map((post, index) => {
       return ` <li class="post">
     <div class="post-image-container">
@@ -58,10 +58,10 @@ export function renderUserPostsPageComponent({ appEl, currentUser }) {
                 <div class="header-container"></div>
                 <div class="posts-user-header">
                 <img
-                  src="${filteredPosts[0].user.imageUrl}"
+                  src="${posts[0].user.imageUrl}"
                   class="posts-user-header__user-image"
                 />
-                <p class="posts-user-header__user-name">${filteredPosts[0].user.name}</p>
+                <p class="posts-user-header__user-name">${posts[0].user.name}</p>
               </div>
                 <ul class="posts">${appHtml}</ul></div>`;
 
@@ -76,5 +76,6 @@ export function renderUserPostsPageComponent({ appEl, currentUser }) {
       });
     });
   }
+
   initLikeButton();
 }

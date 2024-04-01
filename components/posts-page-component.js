@@ -1,7 +1,7 @@
-import { USER_POSTS_PAGE } from "../routes.js";
+import { POSTS_PAGE, USER_POSTS_PAGE } from "../routes.js";
 import { renderHeaderComponent } from "./header-component.js";
-import { posts, goToPage, getToken, setPosts, renderApp } from "../index.js";
-import {getPosts} from "../api.js"
+import { posts, goToPage, getToken, setPosts, renderApp, page, currentUser } from "../index.js";
+import { getPosts, getUserPosts } from "../api.js";
 
 export function renderPostsPageComponent({ appEl, token }) {
   // TODO: реализовать рендер постов из api
@@ -76,7 +76,7 @@ export function renderPostsPageComponent({ appEl, token }) {
   initLikeButton();
 }
 
-export function initLikeButton () {
+export function initLikeButton() {
   for (let likeEl of document.querySelectorAll(".like-button")) {
     likeEl.addEventListener("click", () => {
       const index = likeEl.dataset.index;
@@ -108,10 +108,18 @@ export function initLikeButton () {
           return response.json();
         })
         .then(() => {
-          getPosts({ token: getToken() }).then((res) => {
-            setPosts(res);
-            renderApp();
-          });
+          if (page === POSTS_PAGE) {
+            getPosts({ token: getToken() }).then((res) => {
+              setPosts(res);
+              renderApp();
+            });
+          } else {
+            getUserPosts({ token: getToken(), id: currentUser }).then((res) => {
+              console.log(currentUser)
+              setPosts(res);
+              renderApp();
+            });
+          }
         })
         .catch((error) => {
           if (error.message === "Нет авторизации") {
