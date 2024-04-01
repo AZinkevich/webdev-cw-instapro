@@ -6,6 +6,7 @@ import { currentUser } from "./index.js";
 const personalKey = "prod";
 const baseHost = "https://wedev-api.sky.pro";
 export const postsHost = `${baseHost}/api/v1/${personalKey}/instapro`;
+const userPostHost = `${baseHost}/api/v1/${personalKey}/instapro/user-posts/`
 
 export function getPosts({ token }) {
   return fetch(postsHost, {
@@ -27,8 +28,8 @@ export function getPosts({ token }) {
     });
 }
 
-export function getUserPosts({ token }) {
-  return fetch("https://wedev-api.sky.pro/api/v1/prod/instapro/user-posts/" + currentUser, {
+export function getUserPosts({ token, currentUser }) {
+  return fetch(userPostHost + currentUser, {
     method: "GET",
     headers: {
       Authorization: token,
