@@ -4,6 +4,8 @@ import { posts, goToPage, user, page, getToken, currentUser, setPosts, renderApp
 import { initLikeButton, userLogin } from "./posts-page-component.js";
 import { sanitize } from "./sanitize-component.js";
 import { deletePost, getUserPosts } from "../api.js";
+import { formatDistanceToNow } from "date-fns";
+import { ru } from "date-fns/locale/ru";
 
 export function renderUserPostsPageComponent({ appEl, currentUser }) {
   // TODO: реализовать рендер постов из api
@@ -53,7 +55,10 @@ export function renderUserPostsPageComponent({ appEl, currentUser }) {
       <span class="user-name">${sanitize(post.user.name)}</span>
       ${sanitize(post.description)}
     </p>
-    <p class="post-date">19 минут назад</p>
+    <p class="post-date">${formatDistanceToNow(new Date(post.createdAt), {
+      locale: ru,
+      addSuffix: true,
+    })}</p>
   </li>
     `;
     })
