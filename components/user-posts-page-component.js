@@ -1,9 +1,8 @@
-import { POSTS_PAGE, USER_POSTS_PAGE } from "../routes.js";
+import { USER_POSTS_PAGE } from "../routes.js";
 import { renderHeaderComponent } from "./header-component.js";
-import { posts, goToPage, user, page, getToken, currentUser, setPosts, renderApp } from "../index.js";
-import { initLikeButton, userLogin } from "./posts-page-component.js";
+import { posts, goToPage } from "../index.js";
+import { initDeleteButton, initLikeButton, userLogin } from "./posts-page-component.js";
 import { sanitize } from "./sanitize-component.js";
-import { deletePost, getUserPosts } from "../api.js";
 import { formatDistanceToNow } from "date-fns";
 import { ru } from "date-fns/locale/ru";
 
@@ -87,28 +86,3 @@ export function renderUserPostsPageComponent({ appEl, currentUser }) {
   initLikeButton();
   initDeleteButton();
 }
-
-export function initDeleteButton() {
-  if (!user) return;
-  const deleteButtonElts = document.querySelectorAll(".delete-button");
-  deleteButtonElts.forEach((el) => {
-    el.addEventListener("click", () => {
-      const index = el.dataset.index;
-      //console.log(el.dataset.index, posts[index].id, currentUser);
-      deletePost({postId: posts[index].id})
-      .then(() => {
-        if (page === POSTS_PAGE) {
-          getPosts({ token: getToken() }).then((res) => {
-            setPosts(res);
-            renderApp();
-          });
-        } else {
-          getUserPosts({ token: getToken(), id: currentUser }).then((res) => {
-            console.log(currentUser);
-            setPosts(res);
-            renderApp();
-          });
-        }
-    });
-  });
-})}
