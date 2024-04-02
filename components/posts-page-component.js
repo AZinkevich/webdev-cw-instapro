@@ -15,7 +15,7 @@ import { sanitize } from "./sanitize-component.js";
 import { formatDistanceToNow } from "date-fns";
 import { ru } from "date-fns/locale/ru";
 
-const userLogin = () => {
+export const userLogin = () => {
   if (!user) return;
   {
     return user.login;
@@ -102,7 +102,7 @@ export function renderPostsPageComponent({ appEl, token }) {
   initDeleteButton();
 }
 
-function initDeleteButton() {
+export function initDeleteButton() {
   if (!user) return;
   const deleteButtonElts = document.querySelectorAll(".delete-button");
   deleteButtonElts.forEach((el) => {

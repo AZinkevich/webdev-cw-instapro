@@ -1,8 +1,9 @@
-import { USER_POSTS_PAGE } from "../routes.js";
+import { POSTS_PAGE, USER_POSTS_PAGE } from "../routes.js";
 import { renderHeaderComponent } from "./header-component.js";
-import { posts, goToPage } from "../index.js";
-import { initLikeButton } from "./posts-page-component.js";
+import { posts, goToPage, user, page, getToken, currentUser, setPosts, renderApp } from "../index.js";
+import { initLikeButton, userLogin } from "./posts-page-component.js";
 import { sanitize } from "./sanitize-component.js";
+import { deletePost, getUserPosts } from "../api.js";
 
 export function renderUserPostsPageComponent({ appEl, currentUser }) {
   // TODO: реализовать рендер постов из api
@@ -44,6 +45,9 @@ export function renderUserPostsPageComponent({ appEl, currentUser }) {
               post.likes.length === 1 ? "" : `и еще ${post.likes.length - 1}`
             }`
       } </strong></p>
+      <p class = "delete-button" data-index = "${index}">${
+        post.user.login === userLogin() ? "Удалить пост" : ""
+      }</p>
     </div>
     <p class="post-text">
       <span class="user-name">${sanitize(post.user.name)}</span>
@@ -58,11 +62,8 @@ export function renderUserPostsPageComponent({ appEl, currentUser }) {
   appEl.innerHTML = `<div class="page-container">
                 <div class="header-container"></div>
                 <div class="posts-user-header">
-                <img
-                  src="${posts[0].user.imageUrl}"
-                  class="posts-user-header__user-image"
-                />
-                <p class="posts-user-header__user-name">${posts[0].user.name}</p>
+                ${posts.length ? `<img src=${posts[0].user.imageUrl} class="posts-user-header__user-image" />` : ""}
+                <p class="posts-user-header__user-name">${posts.length ? posts[0].user.name : ""}</p>
               </div>
                 <ul class="posts">${appHtml}</ul></div>`;
 
@@ -79,4 +80,30 @@ export function renderUserPostsPageComponent({ appEl, currentUser }) {
   }
 
   initLikeButton();
+  initDeleteButton();
 }
+
+export function initDeleteButton() {
+  if (!user) return;
+  const deleteButtonElts = document.querySelectorAll(".delete-button");
+  deleteButtonElts.forEach((el) => {
+    el.addEventListener("click", () => {
+      const index = el.dataset.index;
+      //console.log(el.dataset.index, posts[index].id, currentUser);
+      deletePost({postId: posts[index].id})
+      .then(() => {
+        if (page === POSTS_PAGE) {
+          getPosts({ token: getToken() }).then((res) => {
+            setPosts(res);
+            renderApp();
+          });
+        } else {
+          getUserPosts({ token: getToken(), id: currentUser }).then((res) => {
+            console.log(currentUser);
+            setPosts(res);
+            renderApp();
+          });
+        }
+    });
+  });
+})}
