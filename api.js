@@ -1,12 +1,12 @@
 // Замени на свой, чтобы получить независимый от других набор данных.
 
-import { currentUser } from "./index.js";
+import { currentUser, getToken } from "./index.js";
 
 // "боевая" версия инстапро лежит в ключе prod
 const personalKey = ":vich";
 const baseHost = "https://wedev-api.sky.pro";
 export const postsHost = `${baseHost}/api/v1/${personalKey}/instapro`;
-const userPostHost = `${baseHost}/api/v1/${personalKey}/instapro/user-posts/`
+const userPostHost = `${baseHost}/api/v1/${personalKey}/instapro/user-posts/`;
 
 export function getPosts({ token }) {
   return fetch(postsHost, {
@@ -29,6 +29,7 @@ export function getPosts({ token }) {
 }
 
 export function getUserPosts({ token }) {
+  //console.log(id);
   return fetch(userPostHost + currentUser, {
     method: "GET",
     headers: {
@@ -91,8 +92,16 @@ export function uploadImage({ file }) {
     method: "POST",
     body: data,
   }).then((response) => {
-    console.log(response)
+    console.log(response);
     return response.json();
   });
 }
 
+export function deletePost({ postId }) {
+  return fetch(postsHost + "/" + postId, {
+    method: "DELETE",
+    headers: {
+      Authorization: getToken(),
+    },
+  });
+}

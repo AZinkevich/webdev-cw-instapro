@@ -8,15 +8,23 @@ import {
   renderApp,
   page,
   currentUser,
+  user,
 } from "../index.js";
-import { getPosts, getUserPosts, postsHost } from "../api.js";
+import { deletePost, getPosts, getUserPosts, postsHost } from "../api.js";
 import { sanitize } from "./sanitize-component.js";
 import { formatDistanceToNow } from "date-fns";
 import { ru } from "date-fns/locale/ru";
 
+const userLogin = () => {
+  if (!user) return;
+  {
+    return user.login;
+  }
+};
+
 export function renderPostsPageComponent({ appEl, token }) {
   // TODO: реализовать рендер постов из api
-  console.log("Актуальный список постов:", posts);
+  console.log("Актуальный список постов:", posts, userLogin());
   /**
    * TODO: чтобы отформатировать дату создания поста в виде "19 минут назад"
    * можно использовать https://date-fns.org/v2.29.3/docs/formatDistanceToNow
@@ -57,6 +65,9 @@ export function renderPostsPageComponent({ appEl, token }) {
               post.likes.length === 1 ? "" : `и еще ${post.likes.length - 1}`
             }`
       } </strong></p>
+      <p class = "delete-button" data-index = "${index}">${
+        post.user.login === userLogin() ? "Удалить пост" : ""
+      }</p>
     </div>
     <p class="post-text">
       <span class="user-name">${sanitize(post.user.name)}</span>
@@ -88,7 +99,33 @@ export function renderPostsPageComponent({ appEl, token }) {
   }
 
   initLikeButton();
+  initDeleteButton();
 }
+
+function initDeleteButton() {
+  if (!user) return;
+  const deleteButtonElts = document.querySelectorAll(".delete-button");
+  deleteButtonElts.forEach((el) => {
+    el.addEventListener("click", () => {
+      const index = el.dataset.index;
+      console.log(el.dataset.index, posts[index].id, currentUser);
+      deletePost({postId: posts[index].id})
+      .then(() => {
+        if (page === POSTS_PAGE) {
+          getPosts({ token: getToken() }).then((res) => {
+            setPosts(res);
+            renderApp();
+          });
+        } else {
+          getUserPosts({ token: getToken(), id: currentUser }).then((res) => {
+            console.log(currentUser);
+            setPosts(res);
+            renderApp();
+          });
+        }
+    });
+  });
+})}
 
 export function initLikeButton() {
   for (let likeEl of document.querySelectorAll(".like-button")) {

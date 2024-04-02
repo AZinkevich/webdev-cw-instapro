@@ -93,6 +93,12 @@
   cursor: pointer;
 }
 
+.delete-button {
+  padding-left: 20px;
+  cursor: pointer;
+  color: red;
+}
+
 .user-name {
   font-weight: 500;
 }
@@ -107,7 +113,7 @@
   color: #8a8a8a;
 }
 
-.post + .post {
+.post+.post {
   margin-top: 20px;
 }
 
