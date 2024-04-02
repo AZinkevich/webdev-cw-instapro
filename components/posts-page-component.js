@@ -1,7 +1,7 @@
 import { POSTS_PAGE, USER_POSTS_PAGE } from "../routes.js";
 import { renderHeaderComponent } from "./header-component.js";
 import { posts, goToPage, getToken, setPosts, renderApp, page, currentUser } from "../index.js";
-import { getPosts, getUserPosts } from "../api.js";
+import { getPosts, getUserPosts, postsHost } from "../api.js";
 
 export function renderPostsPageComponent({ appEl, token }) {
   // TODO: реализовать рендер постов из api
@@ -86,8 +86,7 @@ export function initLikeButton() {
         likeEl.dataset.index,
         posts[index].isLiked
       );
-      return fetch(
-        "https://wedev-api.sky.pro/api/v1/prod/instapro/" +
+      return fetch(postsHost +
           likeEl.dataset.postId +
           (posts[index].isLiked ? "/dislike" : "/like"),
         {
