@@ -1,8 +1,18 @@
 import { POSTS_PAGE, USER_POSTS_PAGE } from "../routes.js";
 import { renderHeaderComponent } from "./header-component.js";
-import { posts, goToPage, getToken, setPosts, renderApp, page, currentUser } from "../index.js";
+import {
+  posts,
+  goToPage,
+  getToken,
+  setPosts,
+  renderApp,
+  page,
+  currentUser,
+} from "../index.js";
 import { getPosts, getUserPosts, postsHost } from "../api.js";
 import { sanitize } from "./sanitize-component.js";
+import { formatDistanceToNow } from "date-fns";
+import { ru } from "date-fns/locale/ru";
 
 export function renderPostsPageComponent({ appEl, token }) {
   // TODO: реализовать рендер постов из api
@@ -52,7 +62,10 @@ export function renderPostsPageComponent({ appEl, token }) {
       <span class="user-name">${sanitize(post.user.name)}</span>
       ${sanitize(post.description)}
     </p>
-    <p class="post-date">19 минут назад</p>
+    <p class="post-date">${formatDistanceToNow(new Date(post.createdAt), {
+      locale: ru,
+      addSuffix: true,
+    })}</p>
   </li>
     `;
     })
@@ -87,7 +100,9 @@ export function initLikeButton() {
         likeEl.dataset.index,
         posts[index].isLiked
       );
-      return fetch(postsHost + "/" +
+      return fetch(
+        postsHost +
+          "/" +
           likeEl.dataset.postId +
           (posts[index].isLiked ? "/dislike" : "/like"),
         {
@@ -115,7 +130,7 @@ export function initLikeButton() {
             });
           } else {
             getUserPosts({ token: getToken(), id: currentUser }).then((res) => {
-              console.log(currentUser)
+              console.log(currentUser);
               setPosts(res);
               renderApp();
             });
