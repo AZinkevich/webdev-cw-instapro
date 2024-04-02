@@ -133,13 +133,21 @@ export const renderApp = () => {
             description,
             imageUrl,
           }),
-        }).then((response) => {
-          if (response.status === 400) {
-            throw new Error("ошибка 400");
-          }
-          goToPage(POSTS_PAGE);
-          return response.json();
-        });
+        })
+          .then((response) => {
+            if (response.status === 400) {
+              throw new Error("Нет фотографии или описания");
+            }
+            goToPage(POSTS_PAGE);
+            return response.json();
+          })
+          .catch((error) => {
+            if (error.message === "Нет фотографии или описания") {
+              alert("Добавьте фотографию и описание");
+              console.warn(error);
+            }
+            return;
+          });
       },
     });
   }

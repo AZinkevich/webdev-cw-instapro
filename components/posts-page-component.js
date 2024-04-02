@@ -2,6 +2,7 @@ import { POSTS_PAGE, USER_POSTS_PAGE } from "../routes.js";
 import { renderHeaderComponent } from "./header-component.js";
 import { posts, goToPage, getToken, setPosts, renderApp, page, currentUser } from "../index.js";
 import { getPosts, getUserPosts, postsHost } from "../api.js";
+import { sanitize } from "./sanitize-component.js";
 
 export function renderPostsPageComponent({ appEl, token }) {
   // TODO: реализовать рендер постов из api
@@ -19,7 +20,7 @@ export function renderPostsPageComponent({ appEl, token }) {
         src="${post.user.imageUrl}"
         class="post-header__user-image"
       />
-      <p class="post-header__user-name">${post.user.name}</p>
+      <p class="post-header__user-name">${sanitize(post.user.name)}</p>
     </div>
     <div class="post-image-container">
       <img
@@ -48,8 +49,8 @@ export function renderPostsPageComponent({ appEl, token }) {
       } </strong></p>
     </div>
     <p class="post-text">
-      <span class="user-name">${post.user.name}</span>
-      ${post.description}
+      <span class="user-name">${sanitize(post.user.name)}</span>
+      ${sanitize(post.description)}
     </p>
     <p class="post-date">19 минут назад</p>
   </li>
@@ -86,7 +87,7 @@ export function initLikeButton() {
         likeEl.dataset.index,
         posts[index].isLiked
       );
-      return fetch(postsHost +
+      return fetch(postsHost + "/" +
           likeEl.dataset.postId +
           (posts[index].isLiked ? "/dislike" : "/like"),
         {

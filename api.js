@@ -3,7 +3,7 @@
 import { currentUser } from "./index.js";
 
 // "боевая" версия инстапро лежит в ключе prod
-const personalKey = "prod";
+const personalKey = ":vich";
 const baseHost = "https://wedev-api.sky.pro";
 export const postsHost = `${baseHost}/api/v1/${personalKey}/instapro`;
 const userPostHost = `${baseHost}/api/v1/${personalKey}/instapro/user-posts/`

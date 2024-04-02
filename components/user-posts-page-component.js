@@ -2,6 +2,7 @@ import { USER_POSTS_PAGE } from "../routes.js";
 import { renderHeaderComponent } from "./header-component.js";
 import { posts, goToPage } from "../index.js";
 import { initLikeButton } from "./posts-page-component.js";
+import { sanitize } from "./sanitize-component.js";
 
 export function renderUserPostsPageComponent({ appEl, currentUser }) {
   // TODO: реализовать рендер постов из api
@@ -45,8 +46,8 @@ export function renderUserPostsPageComponent({ appEl, currentUser }) {
       } </strong></p>
     </div>
     <p class="post-text">
-      <span class="user-name">${post.user.name}</span>
-      ${post.description}
+      <span class="user-name">${sanitize(post.user.name)}</span>
+      ${sanitize(post.description)}
     </p>
     <p class="post-date">19 минут назад</p>
   </li>

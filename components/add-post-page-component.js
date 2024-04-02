@@ -46,7 +46,7 @@ export function renderAddPostPageComponent({ appEl, onAddPostClick }) {
 
     document.getElementById("add-button").addEventListener("click", () => {
       onAddPostClick({
-        description: document.getElementById("img-descr").value,
+        description: document.getElementById("img-descr").value.trim(),
         imageUrl: imageUrl,
       });
     });
