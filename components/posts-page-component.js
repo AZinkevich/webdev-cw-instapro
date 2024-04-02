@@ -22,9 +22,9 @@ export const userLogin = () => {
   }
 };
 
-export function renderPostsPageComponent({ appEl, token }) {
+export function renderPostsPageComponent({ appEl }) {
   // TODO: реализовать рендер постов из api
-  console.log("Актуальный список постов:", posts, userLogin());
+
   /**
    * TODO: чтобы отформатировать дату создания поста в виде "19 минут назад"
    * можно использовать https://date-fns.org/v2.29.3/docs/formatDistanceToNow
@@ -108,7 +108,6 @@ export function initDeleteButton() {
   deleteButtonElts.forEach((el) => {
     el.addEventListener("click", () => {
       const index = el.dataset.index;
-      console.log(el.dataset.index, posts[index].id, currentUser);
       deletePost({postId: posts[index].id})
       .then(() => {
         if (page === POSTS_PAGE) {
@@ -118,7 +117,6 @@ export function initDeleteButton() {
           });
         } else {
           getUserPosts({ token: getToken(), id: currentUser }).then((res) => {
-            console.log(currentUser);
             setPosts(res);
             renderApp();
           });
@@ -131,12 +129,6 @@ export function initLikeButton() {
   for (let likeEl of document.querySelectorAll(".like-button")) {
     likeEl.addEventListener("click", () => {
       const index = likeEl.dataset.index;
-      console.log(
-        likeEl.dataset.postId,
-        getToken(),
-        likeEl.dataset.index,
-        posts[index].isLiked
-      );
       return fetch(
         postsHost +
           "/" +
@@ -167,7 +159,6 @@ export function initLikeButton() {
             });
           } else {
             getUserPosts({ token: getToken(), id: currentUser }).then((res) => {
-              console.log(currentUser);
               setPosts(res);
               renderApp();
             });

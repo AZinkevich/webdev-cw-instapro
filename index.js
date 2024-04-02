@@ -73,7 +73,6 @@ export const goToPage = (newPage, data) => {
     }
 
     if (newPage === USER_POSTS_PAGE) {
-      console.log("Открываю страницу пользователя: ", data.userId);
       page = LOADING_PAGE;
       currentUser = data.userId;
       renderApp();
@@ -159,7 +158,6 @@ export const renderApp = () => {
   }
 
   if (page === USER_POSTS_PAGE) {
-    console.log("Открываю страницу пользователя: ", currentUser);
     return renderUserPostsPageComponent({
       appEl,
       currentUser,

@@ -23,13 +23,11 @@ export function getPosts({ token }) {
       return response.json();
     })
     .then((data) => {
-      console.log(data.posts);
       return data.posts;
     });
 }
 
 export function getUserPosts({ token }) {
-  //console.log(id);
   return fetch(userPostHost + currentUser, {
     method: "GET",
     headers: {
@@ -45,7 +43,6 @@ export function getUserPosts({ token }) {
       return response.json();
     })
     .then((data) => {
-      console.log(data.posts);
       return data.posts;
     });
 }
@@ -92,7 +89,6 @@ export function uploadImage({ file }) {
     method: "POST",
     body: data,
   }).then((response) => {
-    console.log(response);
     return response.json();
   });
 }
