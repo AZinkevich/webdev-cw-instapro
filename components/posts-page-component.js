@@ -53,7 +53,7 @@ export function renderPostsPageComponent({ appEl }) {
         post.isLiked
       }">
         ${
-          post.isLiked
+          user
             ? '<img src="./assets/images/like-active.svg">'
             : '<img src="./assets/images/like-not-active.svg">'
         }

@@ -1,6 +1,6 @@
 import { USER_POSTS_PAGE } from "../routes.js";
 import { renderHeaderComponent } from "./header-component.js";
-import { posts, goToPage } from "../index.js";
+import { posts, goToPage, user } from "../index.js";
 import { initDeleteButton, initLikeButton, userLogin } from "./posts-page-component.js";
 import { sanitize } from "./sanitize-component.js";
 import { formatDistanceToNow } from "date-fns";
@@ -34,7 +34,7 @@ export function renderUserPostsPageComponent({ appEl, currentUser }) {
         post.isLiked
       }">
         ${
-          post.isLiked
+          user
             ? '<img src="./assets/images/like-active.svg">'
             : '<img src="./assets/images/like-not-active.svg">'
         }
