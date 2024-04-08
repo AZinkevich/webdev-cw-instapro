@@ -1,8 +1,12 @@
 // Замени на свой, чтобы получить независимый от других набор данных.
+
+import { currentUser, getToken } from "./index.js";
+
 // "боевая" версия инстапро лежит в ключе prod
-const personalKey = "prod";
-const baseHost = "https://webdev-hw-api.vercel.app";
-const postsHost = `${baseHost}/api/v1/${personalKey}/instapro`;
+const personalKey = ":vich";
+const baseHost = "https://wedev-api.sky.pro";
+export const postsHost = `${baseHost}/api/v1/${personalKey}/instapro`;
+const userPostHost = `${baseHost}/api/v1/${personalKey}/instapro/user-posts/`;
 
 export function getPosts({ token }) {
   return fetch(postsHost, {
@@ -10,6 +14,26 @@ export function getPosts({ token }) {
     headers: {
       Authorization: token,
     },
+  })
+    .then((response) => {
+      if (response.status === 401) {
+        throw new Error("Нет авторизации");
+      }
+
+      return response.json();
+    })
+    .then((data) => {
+      return data.posts;
+    });
+}
+
+export function getUserPosts({ token }) {
+  return fetch(userPostHost + currentUser, {
+    method: "GET",
+    headers: {
+      Authorization: token,
+    },
+    id: currentUser,
   })
     .then((response) => {
       if (response.status === 401) {
@@ -66,5 +90,14 @@ export function uploadImage({ file }) {
     body: data,
   }).then((response) => {
     return response.json();
+  });
+}
+
+export function deletePost({ postId }) {
+  return fetch(postsHost + "/" + postId, {
+    method: "DELETE",
+    headers: {
+      Authorization: getToken(),
+    },
   });
 }
